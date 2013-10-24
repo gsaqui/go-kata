@@ -32,8 +32,42 @@ func BasicScore(input string) int {
 	var splitString = SplitInputString(input)
 
 	var score int = 0
-	for _, val := range splitString {
-		score = score + ConvertStringToValue(val)
+	var frame = 1
+	var throw = 0
+	for index, val := range splitString {
+
+		if frame >= 11 {
+			return score
+		}
+
+		if val == "X" {
+			frame++
+			if frame < 10 && (index+2 < len(splitString)) {
+				score = score + ConvertStringToValue(val) + ConvertStringToValue(splitString[index+1]) + ConvertStringToValue(splitString[index+2])
+				throw = throw + 2
+			} else {
+				score = score + 10 + ConvertStringToValue(splitString[index+1]) + ConvertStringToValue(splitString[index+2])
+				throw++
+			}
+
+		} else if val == "/" {
+
+			if frame < 10 && (index+1 < len(splitString)) {
+				score = score + ConvertStringToValue(val) + ConvertStringToValue(splitString[index+1])
+			} else {
+				score = score + 5 + ConvertStringToValue(splitString[index+1])
+				frame = 11
+			}
+			frame++
+			throw++
+		} else {
+			score = score + ConvertStringToValue(val)
+			throw++
+			if throw%2 == 0 && frame != 10 {
+				frame++
+			}
+		}
+
 	}
 	return score
 }
